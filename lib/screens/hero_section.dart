@@ -50,10 +50,10 @@ class HeroSection extends StatelessWidget {
             image: DecorationImage(
               image: AssetImage(
                 themeType == AppThemeType.dark
-                    ? 'images/book_cover.png'
+                    ? 'assets/images/book_cover.png'
                     : themeType == AppThemeType.sepia
-                    ? 'images/sepia_cover.png'
-                    : 'images/light_cover.png',
+                    ? 'assets/images/sepia_cover.png'
+                    : 'assets/images/light_cover.png',
               ),
               fit: BoxFit.cover,
             ),

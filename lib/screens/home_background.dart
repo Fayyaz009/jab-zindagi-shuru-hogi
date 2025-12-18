@@ -13,7 +13,7 @@ class HomeBackground extends StatelessWidget {
       return _darkBackground();
     } else if (themeType == AppThemeType.sepia) {
       return Image.asset(
-        'images/sepia.png',
+        'assets/images/sepia.png',
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
@@ -37,7 +37,7 @@ class HomeBackground extends StatelessWidget {
         ),
 
         Positioned.fill(
-          child: Image.asset('images/stars_bg.jpg', fit: BoxFit.cover),
+          child: Image.asset('assets/images/stars_bg.jpg', fit: BoxFit.cover),
         ),
 
         /// ✅ blur

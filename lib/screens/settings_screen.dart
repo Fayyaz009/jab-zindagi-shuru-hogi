@@ -54,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                     Slider(
                       value: state.scale,
                       min: 1.0,
-                      max: 1.8,
+                      max: 1.5,
 
                       label: state.scale.toStringAsFixed(1),
                       onChanged: (value) {
