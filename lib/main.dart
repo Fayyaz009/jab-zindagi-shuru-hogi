@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<FontSizeBloc, FontSizeState>(
         builder: (context, state) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             builder: (context, child) {
               return MediaQuery(
                 data: MediaQuery.of(

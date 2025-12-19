@@ -66,7 +66,18 @@ class ChapterItem extends StatelessWidget {
               padding: const EdgeInsets.all(12), // Padding moves inside InkWell
               child: Row(
                 children: [
-                  Icon(icon, color: iconColor, size: 28),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: iconColor.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: Icon(icon, color: iconColor, size: 28),
+                  ),
                   const SizedBox(width: 15),
                   Expanded(
                     child: Column(

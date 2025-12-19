@@ -61,6 +61,11 @@ class AppThemes {
       onSurface: Colors.white, // text/icons on surface
       onPrimary: Color(0xFF3E2723),
     ),
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: Color(0x33FFD700), // GOLD highlight
+      cursorColor: Color(0xFFFFD700),
+      selectionHandleColor: Color(0xFFFFD700),
+    ),
   );
 
   // ============================================================
@@ -110,6 +115,11 @@ class AppThemes {
       onSurface: Colors.black,
       onPrimary: Colors.white,
     ),
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: Color(0x55C7B28A), // parchment highlight
+      cursorColor: Color(0xFF6D4C41),
+      selectionHandleColor: Color(0xFF6D4C41),
+    ),
   );
 
   // ============================================================
@@ -158,6 +168,11 @@ class AppThemes {
       surface: Color(0xFFF4E8C1),
       onSurface: Color(0xFF4E342E),
       onPrimary: Colors.white,
+    ),
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: Color(0x332196F3), // soft blue
+      cursorColor: Colors.black,
+      selectionHandleColor: Colors.black,
     ),
   );
 }
