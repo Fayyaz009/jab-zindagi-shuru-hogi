@@ -11,5 +11,9 @@ abstract class FontSizeState extends Equatable {
 
 /// ✅ Concrete State (THIS FIXES YOUR ERROR)
 class FontSizeInitial extends FontSizeState {
-  const FontSizeInitial(double scale) : super(scale);
+  const FontSizeInitial(super.scale);
+}
+
+class FontSizeLoading extends FontSizeState {
+  const FontSizeLoading(super.scale);
 }

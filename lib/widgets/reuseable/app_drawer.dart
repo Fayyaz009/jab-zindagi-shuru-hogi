@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jab_zindagi_shuru_hogi_inzaar/screens/profile.dart';
-import 'package:jab_zindagi_shuru_hogi_inzaar/screens/settings_screen.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_author.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_screen.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/screens/donate_support.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/themes/theme_colors.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/drawer_items.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AppDrawer extends StatelessWidget {
   final AppThemeType themeType;
@@ -10,137 +14,163 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color bgColor = themeType == AppThemeType.dark
-        ? const Color(0xFF0E0E2C)
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFFF4E8C1)
-        : Colors.white;
-
-    final Color textColor = themeType == AppThemeType.dark
-        ? Colors.white
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFF4E342E)
-        : Colors.black;
-
-    final Color iconColor = themeType == AppThemeType.dark
-        ? const Color(0xFFFFD700)
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFF6D4C41)
-        : Colors.black54;
+    final ThemeColors colors = ThemeColors(themeType);
 
     return Drawer(
-      backgroundColor: bgColor,
-      child: Column(
-        children: [
-          /// HEADER
-          DrawerHeader(
-            padding: EdgeInsetsGeometry.all(45),
+      backgroundColor: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.bg,
 
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: themeType == AppThemeType.dark
-                    ? const Color(0xFF1B1B3A)
-                    : themeType == AppThemeType.sepia
-                    ? Color(0xFFE6D3A3)
-                    : Colors.white,
-              ),
-              color: themeType == AppThemeType.dark
-                  ? const Color(0xFF1B1B3A)
-                  : themeType == AppThemeType.sepia
-                  ? Color(0xFFE6D3A3)
-                  : Colors.white,
+          /// ✅ SUBTLE SHADOW (paper depth)
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 18,
+              offset: const Offset(4, 0),
             ),
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: Text(
-                  "جب زندگی شروع ہوگی",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Urdu',
-                    fontSize: 22,
-                    color: textColor,
-                  ),
+          ],
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              /// 🔹 HEADER
+              const _DrawerHeader(),
+
+              /// 🔹 MENU (SCROLLABLE)
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    DrawerItem(
+                      icon: Icons.info_outline,
+                      title: "About",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AboutScreen(themeType: themeType),
+                          ),
+                        );
+                      },
+                    ),
+
+                    DrawerItem(
+                      icon: Icons.person_outline,
+                      title: "About Author",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                AboutAuthorScreen(themeType: themeType),
+                          ),
+                        );
+                      },
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Divider(
+                        color: colors.text.withValues(alpha: 0.15),
+                      ),
+                    ),
+
+                    DrawerItem(
+                      icon: Icons.volunteer_activism_outlined,
+                      title: "Donate & Support",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                DonateSupportScreen(themeType: themeType),
+                          ),
+                        );
+                      },
+                    ),
+
+                    DrawerItem(
+                      icon: Icons.share_outlined,
+                      title: "Share App",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Share.share(
+                          "میں یہ کتاب پڑھ رہا ہوں:\n\n"
+                          "📖 جب زندگی شروع ہوگی\n"
+                          "✍️ ابو یحییٰ\n\n"
+                          "اسلامی، فکری اور روحانی کتاب\n\n"
+                          "Download now from Play Store 👇\n",
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
 
-          /// PROFILE
-          _drawerItem(
-            icon: Icons.person,
-            title: "Profile",
-            iconColor: iconColor,
-            textColor: textColor,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      Profile(themeType: themeType, title: 'Profile'),
+              /// 🔹 FOOTER
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  children: [
+                    Text(
+                      "جب زندگی شروع ہوگی",
+                      style: TextStyle(
+                        fontFamily: 'Urdu',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: colors.text.withValues(alpha: 0.6),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Version 1.0.0",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: colors.text.withValues(alpha: 0.4),
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
+              ),
+            ],
           ),
-
-          /// SETTINGS
-          _drawerItem(
-            icon: Icons.settings,
-            title: "Settings",
-            iconColor: iconColor,
-            textColor: textColor,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SettingsScreen(themeType: themeType),
-                ),
-              );
-            },
-          ),
-
-          /// ABOUT
-          _drawerItem(
-            icon: Icons.info_outline,
-            title: "About",
-            iconColor: iconColor,
-            textColor: textColor,
-            onTap: () {},
-          ),
-
-          /// DONATE
-          _drawerItem(
-            icon: Icons.volunteer_activism,
-            title: "Donate",
-            iconColor: iconColor,
-            textColor: textColor,
-            onTap: () {},
-          ),
-        ],
+        ),
       ),
     );
   }
+}
 
-  Widget _drawerItem({
-    required IconData icon,
-    required String title,
-    required Color iconColor,
-    required Color textColor,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: iconColor),
-      title: Text(
-        title,
+/// 🔹 PRIVATE HEADER
+class _DrawerHeader extends StatelessWidget {
+  const _DrawerHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 140,
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: const Text(
+        "جب زندگی شروع ہوگی",
+        textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 16,
-          color: textColor,
-          fontWeight: FontWeight.w500,
+          fontFamily: 'Urdu',
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
         ),
       ),
-      onTap: onTap,
     );
   }
 }

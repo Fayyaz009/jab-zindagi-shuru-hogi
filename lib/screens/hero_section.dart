@@ -8,58 +8,77 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
+    // 📐 Responsive sizes
+    final double coverWidth = width < 360
+        ? 130
+        : width < 600
+        ? 170
+        : 220;
+    final double coverHeight = coverWidth * 1.4;
+
+    final double glowWidth = coverWidth * 0.85;
+    final double glowHeight = coverHeight * 0.9;
+
+    // ================= GLOW COLORS =================
+    final Color primaryGlow = colorScheme.primary.withValues(alpha: 0.35);
+    final Color secondaryGlow = colorScheme.secondary.withValues(alpha: 0.45);
+
     return Stack(
       alignment: Alignment.center,
       children: [
-        // ===== GLOW =====
+        // ================= GLOW =================
         Container(
-          height: 220,
-          width: 150,
+          width: glowWidth,
+          height: glowHeight,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: themeType == AppThemeType.dark
-                    ? Colors.cyanAccent.withValues(alpha: 0.4)
-                    : themeType == AppThemeType.sepia
-                    ? const Color(0xFF6D4C41).withValues(alpha: 0.35)
-                    : Colors.black.withValues(alpha: 0.25),
-                blurRadius: 25,
-                spreadRadius: 4,
+                color: primaryGlow,
+                blurRadius: coverWidth * 0.18,
+                spreadRadius: coverWidth * 0.02,
               ),
               BoxShadow(
-                color: themeType == AppThemeType.dark
-                    ? Colors.blue.shade900.withValues(alpha: 0.6)
-                    : themeType == AppThemeType.sepia
-                    ? const Color(0xFF8D6E63).withValues(alpha: 0.5)
-                    : Colors.grey.withValues(alpha: 0.4),
-                blurRadius: 60,
-                spreadRadius: 12,
-                offset: const Offset(0, 10),
+                color: secondaryGlow,
+                blurRadius: coverWidth * 0.45,
+                spreadRadius: coverWidth * 0.08,
+                offset: Offset(0, coverWidth * 0.08),
               ),
             ],
           ),
         ),
 
-        // ===== BOOK COVER =====
+        // ================= BOOK COVER =================
         Container(
-          height: 240,
-          width: 170,
+          width: coverWidth,
+          height: coverHeight,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(18),
             image: DecorationImage(
-              image: AssetImage(
-                themeType == AppThemeType.dark
-                    ? 'assets/images/book_cover.png'
-                    : themeType == AppThemeType.sepia
-                    ? 'assets/images/sepia_cover.png'
-                    : 'assets/images/light_cover.png',
-              ),
+              image: AssetImage(_coverForTheme(themeType)),
               fit: BoxFit.cover,
             ),
           ),
         ),
       ],
     );
+  }
+
+  // ================= COVER IMAGE =================
+  String _coverForTheme(AppThemeType themeType) {
+    switch (themeType) {
+      case AppThemeType.dark:
+        return 'assets/images/book_cover.png';
+      case AppThemeType.sepia:
+        return 'assets/images/sepia_cover.png';
+      case AppThemeType.light:
+        return 'assets/images/light_cover.png';
+    }
   }
 }

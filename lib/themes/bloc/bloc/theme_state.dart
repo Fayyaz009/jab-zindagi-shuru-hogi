@@ -8,3 +8,7 @@ class ThemeState {
 
   const ThemeState({required this.themeData, required this.themeType});
 }
+
+class ThemeLoading extends ThemeState {
+  ThemeLoading({required super.themeData, required super.themeType});
+}

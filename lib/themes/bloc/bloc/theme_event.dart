@@ -6,3 +6,5 @@ class ChangeTheme extends ThemeEvent {
   final AppThemeType themeType;
   ChangeTheme(this.themeType);
 }
+
+class LoadTheme extends ThemeEvent {}

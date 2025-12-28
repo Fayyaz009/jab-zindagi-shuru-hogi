@@ -1,61 +1,107 @@
 import 'package:flutter/material.dart';
-
-const String prefaceText =
-    ''' میں نہیں چاہتا کہ قارئین اور اس کتاب کے درمیان رکاوٹ بنوں جو بہت سے لوگوں کی زندگیاں بدل چکی ہے۔ لیکن ایک دو گزارشات نظر ثانی کے حوالے سے عرض کرنی ہیں۔ پہلی یہ کہ کتاب پر نظر ثانی کے دوران میں متعدد چھوٹی بڑی تبدیلیاں کی گئی ہیں۔ ان میں سب سے اہم ناول کا اختتام ہے۔ اس کی وجہ بعض قارئین کی یہ رائے تھی کہ سابقہ اختتام پر ان کے یقین کی کیفیت قدرے کم ہوئی ہے۔ جبکہ میرا بنیادی مقصد ہی آخرت پر یقین پیدا کرنا تھا۔ نئے اختتام میں انشاء اللہ یقین کی یہ کیفیت برقرار رہے گی۔ جبکہ دوسرا سبب یہ ہے کہ ناول کا اگلا حصہ (Sequel) ”قسم اُس وقت کی“ لکھنا میرے پیش نظر ہے۔ یہ اختتام اس پہلو سے بھی مددگار ثابت ہوگا۔
-قارئین بہت سے سوالات پوچھتے رہے ہیں۔اس حوالے سے ایک مفصل تحریر لکھ کر ناول کی ویب سائٹ inzaar.orgلوڈ کر دی گئی ہے۔ اسی طرح نظر ثانی شدہ ایڈیشن کا تفصیلی دیباچہ بھی قارئین وہیں ملاحظہ کر سکتے ہیں۔ کتاب میں ان چیزوں کو شامل نہ کرنے کی وجہ ناول کی ضخامت اور نتیجتاً قیمت کو اس ہوشربا مہنگائی کے دور میں بڑھنے سے روکنا ہے۔
-اللہ تعالیٰ سے دعا ہے کہ وہ ہماری خطاؤں کو درگزر کرتے ہوئے اس کاوش کو قبول فرمائے،آمین۔
-ابو یحییٰ
-یوم العرفہ 1432ھ بمطابق 6 نومبر 2011''';
+import 'package:jab_zindagi_shuru_hogi_inzaar/chapters_data/chapters_data.dart';
 
 final List<Map<String, dynamic>> chapterItems = [
   {
-    "title": "دنیا پر نظر ثانی شدہ ایڈیشن",
+    "title": Chapters.title1,
     "icon": Icons.menu_book,
-    "progress": 0.05,
-    "readingText": prefaceText,
+    "readingText": Chapters.chapter1,
+    'chapterID': 1,
   },
   {
-    "title": "کچھ وضاحتیں، کچھ حدیثیں",
+    "title": Chapters.title2,
     "icon": Icons.library_books,
-    "progress": 0.07,
-  },
-  {"title": "روزِ قیامت", "icon": Icons.balance, "progress": 0.12},
-  {"title": "عرش کے سائے میں", "icon": Icons.shield, "progress": 0.18},
-  {"title": "میدانِ حشر", "icon": Icons.public, "progress": 0.25},
-  {"title": "نامۂ اعمال", "icon": Icons.assignment, "progress": 0.30},
-  {"title": "دوزخ", "icon": Icons.local_fire_department, "progress": 0.35},
-  {
-    "title": "آج بادشاہی کس کی ہے؟",
-    "icon": Icons.emoji_events,
-    "progress": 0.40,
+    "readingText": Chapters.chapter2,
+    'chapterID': 2,
   },
   {
-    "title": "حضرت عیسیٰؑ کی گواہی",
+    "title": Chapters.title3,
+    "icon": Icons.balance,
+    "readingText": Chapters.chapter3,
+    'chapterID': 3,
+  },
+  {
+    "title": Chapters.title4,
+    "icon": Icons.shield_outlined,
+    "readingText": Chapters.chapter4,
+    'chapterID': 4,
+  },
+  {
+    "title": Chapters.title5,
+    "icon": Icons.public_outlined,
+    "readingText": Chapters.chapter5,
+    'chapterID': 5,
+  },
+  {
+    "title": Chapters.title6,
+    "icon": Icons.person_2_outlined, // Naima k liye person icon behtar hai
+    "readingText": Chapters.chapter6,
+    'chapterID': 6,
+  },
+  {
+    "title": Chapters.title7,
+    "icon": Icons.people_outline, // Do saheliyan
+    "readingText": Chapters.chapter7,
+    'chapterID': 7,
+  },
+  {
+    "title": Chapters.title8,
+    "icon": Icons.emoji_events_outlined,
+    "readingText": Chapters.chapter8,
+    'chapterID': 8,
+  },
+  {
+    "title": Chapters.title9,
     "icon": Icons.person_2_outlined,
-    "progress": 0.45,
+    "readingText": Chapters.chapter9,
+    'chapterID': 9,
   },
-  {"title": "حوضِ کوثر", "icon": Icons.water_drop_outlined, "progress": 0.50},
   {
-    "title": "قومِ نوح اور دین کو بدلنے والے",
+    "title": Chapters.title10,
+    "icon": Icons.water_drop_outlined,
+    "readingText": Chapters.chapter10,
+    'chapterID': 10,
+  },
+  {
+    "title": Chapters.title11,
     "icon": Icons.groups,
-    "progress": 0.60,
+    "readingText": Chapters.chapter11,
+    'chapterID': 11,
   },
   {
-    "title": "حسابِ کتاب اور اہلِ جہنم",
+    "title": Chapters.title12,
     "icon": Icons.calculate,
-    "progress": 0.70,
+    "readingText": Chapters.chapter12,
+    'chapterID': 12,
   },
-  {"title": "آخرت کا سفر", "icon": Icons.route, "progress": 0.78},
-  {"title": "نبی ﷺ اسرائیل اور مسلمان", "icon": Icons.star, "progress": 0.85},
   {
-    "title": "ابدیت انجام کی طرف روانگی",
+    "title": Chapters.title13,
+    "icon": Icons.hourglass_bottom,
+    "readingText": Chapters.chapter13,
+    'chapterID': 13,
+  },
+  {
+    "title": Chapters.title14,
+    "icon": Icons.star_border,
+    "readingText": Chapters.chapter14,
+    'chapterID': 14,
+  },
+  {
+    "title": Chapters.title15,
     "icon": Icons.timeline,
-    "progress": 0.92,
+    "readingText": Chapters.chapter15,
+    'chapterID': 15,
   },
   {
-    "title": "جنت کی بادشاہی میں داخلہ",
-    "icon": Icons.king_bed,
-    "progress": 0.97,
+    "title": Chapters.title16,
+    "icon": Icons.king_bed_outlined,
+    "readingText": Chapters.chapter16,
+    'chapterID': 16,
   },
-  {"title": "جب زندگی شروع ہوگی", "icon": Icons.auto_stories, "progress": 1.0},
+  {
+    "title": Chapters.title17,
+    "icon": Icons.auto_stories_outlined,
+    "readingText": Chapters.chapter17,
+    'chapterID': 17,
+  },
 ];

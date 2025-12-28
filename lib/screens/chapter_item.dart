@@ -6,7 +6,7 @@ class ChapterItem extends StatelessWidget {
   final String title;
   final IconData icon;
   final double progress;
-  final VoidCallback onTap; // 1. Add this callback
+  final VoidCallback onTap;
 
   const ChapterItem({
     super.key,
@@ -14,36 +14,39 @@ class ChapterItem extends StatelessWidget {
     required this.icon,
     required this.progress,
     required this.themeType,
-    required this.onTap, // 2. Require it in constructor
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Colors logic remains the same
-    final Color bgColor = themeType == AppThemeType.dark
-        ? const Color(0xFF1B1B3A)
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFFE6D3A3)
-        : Colors.white;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
-    final Color iconColor = themeType == AppThemeType.dark
-        ? const Color(0xFFFFD700)
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFF6D4C41)
-        : Colors.black87;
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
 
-    final Color textColor = themeType == AppThemeType.dark
-        ? Colors.white
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFF4E342E)
-        : Colors.black87;
+    // 📐 Responsive sizes
+    final double iconBoxSize = width < 360
+        ? 44
+        : width < 600
+        ? 50
+        : 56;
+    final double titleFontSize = width < 360
+        ? 16
+        : width < 600
+        ? 18
+        : 20;
+    final double verticalPadding = width < 360 ? 10 : 12;
 
-    // 3. Structural change for Click Effect
+    final Color surface = theme.cardColor;
+    final Color primary = colorScheme.primary;
+    final Color onSurface = colorScheme.onSurface;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: EdgeInsets.only(bottom: width * 0.04),
       decoration: BoxDecoration(
-        // We only keep Shadow and Radius here. Color moves to Material.
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.15),
@@ -52,54 +55,54 @@ class ChapterItem extends StatelessWidget {
           ),
         ],
       ),
-      // ClipRRect ensures the ripple effect stays inside rounded corners
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         child: Material(
-          color: bgColor, // Background color moves here
+          color: surface,
           child: InkWell(
-            onTap: onTap, // Handle the click
-            splashColor: iconColor.withValues(
-              alpha: 0.2,
-            ), // Custom splash color
+            onTap: onTap,
+            splashColor: primary.withValues(alpha: 0.18),
+            highlightColor: primary.withValues(alpha: 0.08),
             child: Padding(
-              padding: const EdgeInsets.all(12), // Padding moves inside InkWell
+              padding: EdgeInsets.all(verticalPadding),
               child: Row(
                 children: [
+                  // ================= ICON =================
                   Container(
-                    width: 50,
-                    height: 50,
+                    width: iconBoxSize,
+                    height: iconBoxSize,
                     decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: iconColor.withValues(alpha: 0.5),
+                        color: primary.withValues(alpha: 0.45),
                       ),
                     ),
-                    child: Icon(icon, color: iconColor, size: 28),
+                    child: Icon(icon, color: primary, size: iconBoxSize * 0.55),
                   ),
-                  const SizedBox(width: 15),
+
+                  SizedBox(width: width * 0.04),
+
+                  // ================= TEXT + PROGRESS =================
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           title,
-                          style: TextStyle(
+                          textDirection: TextDirection.rtl,
+                          style: textTheme.bodyLarge?.copyWith(
                             fontFamily: 'Urdu',
-                            fontSize: 18,
-                            color: textColor,
+                            fontSize: titleFontSize,
+                            color: onSurface,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: width * 0.02),
                         LinearProgressIndicator(
-                          borderRadius: BorderRadius.circular(15),
                           value: progress,
-                          minHeight: 6,
-                          backgroundColor: themeType == AppThemeType.dark
-                              ? Colors.white10
-                              : Colors.black12,
-                          valueColor: AlwaysStoppedAnimation<Color>(iconColor),
+                          minHeight: width < 360 ? 5 : 6,
+                          borderRadius: BorderRadius.circular(20),
+                          backgroundColor: onSurface.withValues(alpha: 0.12),
+                          valueColor: AlwaysStoppedAnimation<Color>(primary),
                         ),
                       ],
                     ),

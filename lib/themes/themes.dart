@@ -14,18 +14,18 @@ class AppThemes {
   }
 
   // ============================================================
-  // 🌙 DARK THEME — Mystical Blue / Purple
+  // 🌙 DARK THEME — Premium Night Reading
   // ============================================================
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
 
-    scaffoldBackgroundColor: const Color(0xFF090A15),
+    scaffoldBackgroundColor: const Color(0xFF0D102A),
 
-    primaryColor: const Color(0xFFFFD700),
+    primaryColor: const Color(0xFFC9A24D), // muted gold
 
-    cardColor: const Color(0xFF1B1B3A),
+    cardColor: const Color(0xFF1A1F3C),
 
-    iconTheme: const IconThemeData(color: Colors.white70),
+    iconTheme: const IconThemeData(color: Color(0xFFB0B3C7)),
 
     dividerColor: Colors.white24,
 
@@ -33,110 +33,109 @@ class AppThemes {
       titleLarge: TextStyle(
         fontFamily: 'Urdu',
         fontSize: 24,
-        color: Colors.white,
+        color: Color(0xFFECECEC),
       ),
       bodyLarge: TextStyle(
         fontSize: 18,
-        color: Colors.white,
+        color: Color(0xFFE0E0E0),
         fontFamily: 'Urdu',
       ),
       bodyMedium: TextStyle(
         fontSize: 16,
-        color: Colors.white70,
+        color: Color(0xFFB0B3C7),
         fontFamily: 'Urdu',
       ),
     ),
 
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Color(0xFFFFD700),
-      linearTrackColor: Color(0xFF2C2C54),
+      color: Color(0xFFC9A24D),
+      linearTrackColor: Color(0xFF2A2F55),
     ),
 
-    // ✅ UPDATED ColorScheme (NO deprecated fields)
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFFFD700), // gold
-      secondary: Color(0xFF4527A0), // glow
-      tertiary: Color(0xFF1B2556), // gradient top
-      surface: Color(0xFF090A15), // screen base
-      onSurface: Colors.white, // text/icons on surface
+      primary: Color(0xFFC9A24D),
+      secondary: Color(0xFF5C6BC0),
+      tertiary: Color(0xFF1A1F3C),
+      surface: Color(0xFF0D102A),
+      onSurface: Color(0xFFECECEC),
       onPrimary: Color(0xFF3E2723),
     ),
+
     textSelectionTheme: const TextSelectionThemeData(
-      selectionColor: Color(0x33FFD700), // GOLD highlight
-      cursorColor: Color(0xFFFFD700),
-      selectionHandleColor: Color(0xFFFFD700),
+      selectionColor: Color(0x33C9A24D),
+      cursorColor: Color(0xFFC9A24D),
+      selectionHandleColor: Color(0xFFC9A24D),
     ),
   );
 
   // ============================================================
-  // ☀️ LIGHT THEME
+  // ☀️ LIGHT THEME — Clean & Modern
   // ============================================================
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
 
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: const Color(0xFFFFFFFF),
 
-    primaryColor: Colors.black,
+    primaryColor: const Color(0xFF222222),
 
-    cardColor: const Color(0xFFF2F2F2),
+    cardColor: const Color(0xFFF4F4F4),
 
-    iconTheme: const IconThemeData(color: Colors.black54),
+    iconTheme: const IconThemeData(color: Color(0xFF616161)),
 
-    dividerColor: Colors.black12,
+    dividerColor: const Color(0xFFE0E0E0),
 
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontFamily: 'Urdu',
         fontSize: 24,
-        color: Colors.black,
+        color: Color(0xFF222222),
       ),
       bodyLarge: TextStyle(
         fontSize: 18,
-        color: Colors.black87,
+        color: Color(0xFF333333),
         fontFamily: 'Urdu',
       ),
       bodyMedium: TextStyle(
         fontSize: 16,
-        color: Colors.black54,
+        color: Color(0xFF616161),
         fontFamily: 'Urdu',
       ),
     ),
 
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Colors.black,
-      linearTrackColor: Colors.black12,
+      color: Color(0xFF222222),
+      linearTrackColor: Color(0xFFE0E0E0),
     ),
 
     colorScheme: const ColorScheme.light(
-      primary: Colors.black,
-      secondary: Color(0xFFBDBDBD),
+      primary: Color(0xFF222222),
+      secondary: Color(0xFF9E9E9E),
       tertiary: Color(0xFFE0E0E0),
       surface: Colors.white,
-      onSurface: Colors.black,
+      onSurface: Color(0xFF222222),
       onPrimary: Colors.white,
     ),
+
     textSelectionTheme: const TextSelectionThemeData(
-      selectionColor: Color(0x55C7B28A), // parchment highlight
-      cursorColor: Color(0xFF6D4C41),
-      selectionHandleColor: Color(0xFF6D4C41),
+      selectionColor: Color(0x33222222),
+      cursorColor: Color(0xFF222222),
+      selectionHandleColor: Color(0xFF222222),
     ),
   );
 
   // ============================================================
-  // 📜 SEPIA THEME — Old Paper Look
+  // 📜 SEPIA THEME — PERFECT PAPER MATCH
   // ============================================================
   static final ThemeData sepiaTheme = ThemeData(
     brightness: Brightness.light,
 
-    scaffoldBackgroundColor: const Color(0xFF6D4C41),
+    scaffoldBackgroundColor: const Color(0xFFF4E8C1), // paper base
 
-    primaryColor: const Color(0xFF6D4C41),
-
-    cardColor: const Color(0xFFE6D3A3),
-
-    iconTheme: const IconThemeData(color: Color(0xFF5D4037)),
+    cardColor: const Color(0xFFEAD9AD), // paper surface
 
     dividerColor: const Color(0xFFC7B28A),
+
+    iconTheme: const IconThemeData(color: Color(0xFF5D4037)),
 
     textTheme: const TextTheme(
       titleLarge: TextStyle(
@@ -144,10 +143,16 @@ class AppThemes {
         fontSize: 24,
         color: Color(0xFF4E342E),
       ),
+      titleMedium: TextStyle(
+        fontSize: 18,
+        color: Color(0xFF4E342E),
+        fontFamily: 'Urdu',
+      ),
       bodyLarge: TextStyle(
         fontSize: 18,
         color: Color(0xFF5D4037),
         fontFamily: 'Urdu',
+        height: 1.7,
       ),
       bodyMedium: TextStyle(
         fontSize: 16,
@@ -157,22 +162,23 @@ class AppThemes {
     ),
 
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Color(0xFF6D4C41),
+      color: Color(0xFFC9A24D), // gold accent
       linearTrackColor: Color(0xFFC7B28A),
     ),
 
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFF6D4C41),
-      secondary: Color(0xFFD2B48C),
-      tertiary: Color(0xFFEAD7A1),
-      surface: Color(0xFFF4E8C1),
-      onSurface: Color(0xFF4E342E),
-      onPrimary: Colors.white,
+      primary: Color(0xFFC9A24D), // gold
+      secondary: Color(0xFFB0893F), // dark gold
+      tertiary: Color(0xFFEAD9AD), // paper surface
+      surface: Color(0xFFF4E8C1), // background
+      onSurface: Color(0xFF4E342E), // text
+      onPrimary: Color(0xFF3E2723),
     ),
+
     textSelectionTheme: const TextSelectionThemeData(
-      selectionColor: Color(0x332196F3), // soft blue
-      cursorColor: Colors.black,
-      selectionHandleColor: Colors.black,
+      selectionColor: Color(0x33C9A24D),
+      cursorColor: Color(0xFF6D4C41),
+      selectionHandleColor: Color(0xFF6D4C41),
     ),
   );
 }

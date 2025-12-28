@@ -11,27 +11,28 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = themeType == AppThemeType.dark
-        ? Colors.white
-        : themeType == AppThemeType.sepia
-        ? const Color(0xFF4E342E)
-        : Colors.black;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // ================= DRAWER BUTTON =================
         IconButton(
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
-          icon: Icon(Icons.menu, color: color),
+          icon: Icon(Icons.menu, color: colorScheme.onSurface),
         ),
 
+        // ================= TITLE =================
         Text(
           "جب زندگی شروع ہوگی",
-          style: TextStyle(fontFamily: 'Urdu', fontSize: 24, color: color),
+          style: textTheme.titleLarge?.copyWith(fontFamily: 'Urdu'),
         ),
 
+        // ================= THEME TOGGLE =================
         IconButton(
           icon: Icon(
             themeType == AppThemeType.dark
@@ -39,16 +40,16 @@ class HomeHeader extends StatelessWidget {
                 : themeType == AppThemeType.light
                 ? Icons.light_mode
                 : Icons.auto_stories,
-            color: color,
+            color: colorScheme.onSurface,
           ),
           onPressed: () {
-            final next = themeType == AppThemeType.dark
+            final nextTheme = themeType == AppThemeType.dark
                 ? AppThemeType.light
                 : themeType == AppThemeType.light
                 ? AppThemeType.sepia
                 : AppThemeType.dark;
 
-            context.read<ThemeBloc>().add(ChangeTheme(next));
+            context.read<ThemeBloc>().add(ChangeTheme(nextTheme));
           },
         ),
       ],

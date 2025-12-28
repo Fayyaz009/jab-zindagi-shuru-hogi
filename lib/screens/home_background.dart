@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
 
 class HomeBackground extends StatelessWidget {
@@ -9,42 +9,84 @@ class HomeBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (themeType == AppThemeType.dark) {
-      return _darkBackground();
-    } else if (themeType == AppThemeType.sepia) {
-      return Image.asset(
-        'assets/images/sepia.png',
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-      );
-    } else {
-      return Container(color: Colors.white);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    switch (themeType) {
+      case AppThemeType.dark:
+        return _darkBackground(colorScheme);
+
+      case AppThemeType.sepia:
+        return _sepiaBackground(context);
+
+      case AppThemeType.light:
+        return Container(color: theme.scaffoldBackgroundColor);
     }
   }
 
-  Widget _darkBackground() {
+  // ============================================================
+  // 🌙 DARK BACKGROUND — Mystical + Calm
+  // ============================================================
+  Widget _darkBackground(ColorScheme colorScheme) {
     return Stack(
       children: [
+        // Base gradient
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF1B2556), Color(0xFF090A15)],
+              colors: [colorScheme.tertiary, colorScheme.surface],
             ),
           ),
         ),
 
+        // Stars texture
         Positioned.fill(
           child: Image.asset('assets/images/stars_bg.jpg', fit: BoxFit.cover),
         ),
 
-        /// ✅ blur
+        // Soft blur overlay
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: Container(color: Colors.black.withValues(alpha: 0.15)),
+            child: Container(
+              color: colorScheme.surface.withValues(alpha: 0.15),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // 📜 SEPIA BACKGROUND — Old Parchment (MATCHED)
+  // ============================================================
+  Widget _sepiaBackground(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    // Slight adaptive alpha for very small phones
+    final double overlayAlpha = width < 360 ? 0.52 : 0.48;
+
+    return Stack(
+      children: [
+        // Base parchment image
+        Positioned.fill(
+          child: Image.asset('assets/images/sepia.png', fit: BoxFit.cover),
+        ),
+
+        // Warm parchment overlay (key fix)
+        Positioned.fill(
+          child: Container(
+            color: const Color(0xFFF4E8C1).withValues(alpha: overlayAlpha),
+          ),
+        ),
+
+        // Ultra-soft blur for depth
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+            child: Container(color: Colors.transparent),
           ),
         ),
       ],

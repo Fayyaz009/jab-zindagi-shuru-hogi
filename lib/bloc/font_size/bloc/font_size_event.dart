@@ -7,3 +7,5 @@ class ChangeFontSize extends FontSizeEvent {
   final double scale;
   ChangeFontSize(this.scale);
 }
+
+class LoadFontSize extends FontSizeEvent {}

@@ -22,43 +22,35 @@ class NavigationItems extends StatelessWidget {
     final bool isSelected = selectedIndex == index;
     final AppThemeType themeType = context.watch<ThemeBloc>().state.themeType;
 
-    // ================= DARK THEME (as-is, GOLD highlight) =================
-    const Color darkActive = Color(0xFFFFD700); // GOLD
-    const Color darkInactive = Colors.white70;
+    // ================= DARK THEME =================
+    const Color darkActive = Color(0xFFC9A24D); // muted gold
+    const Color darkInactive = Color(0xFFB0B3C7); // soft grey-blue
 
     // ================= LIGHT THEME =================
-    const Color lightActive = Colors.black;
-    final Color lightInactive = Colors.black.withValues(alpha: 0.6);
+    const Color lightActive = Color(0xFF222222); // near black
+    const Color lightInactive = Color(0xFF9E9E9E); // soft grey
 
     // ================= SEPIA THEME =================
-    const Color sepiaActive = Color(0xFF6D4C41); // brown
-    final Color sepiaInactive = const Color.fromARGB(
-      255,
-      0,
-      0,
-      0,
-    ).withValues(alpha: 0.6);
+    const Color sepiaActive = Color(0xFF8B6B4F); // brown-gold
+    const Color sepiaInactive = Color(0xFFB8A58A); // faded paper brown
 
-    // ================= ICON COLOR =================
-    final Color iconColor = themeType == AppThemeType.dark
+    // ================= FINAL COLOR =================
+    final Color itemColor = themeType == AppThemeType.dark
         ? (isSelected ? darkActive : darkInactive)
         : themeType == AppThemeType.sepia
         ? (isSelected ? sepiaActive : sepiaInactive)
         : (isSelected ? lightActive : lightInactive);
 
-    // ================= TEXT COLOR =================
-    final Color textColor = iconColor;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 26, color: iconColor),
+        Icon(icon, size: 26, color: itemColor),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            fontSize: 10,
-            color: textColor,
+            fontSize: 13,
+            color: itemColor,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
