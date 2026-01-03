@@ -90,16 +90,30 @@ class SettingsScreen extends StatelessWidget {
                 builder: (context, state) {
                   return Column(
                     children: [
-                      Slider(
-                        value: state.scale,
-                        min: 1.0,
-                        max: 1.5,
-                        onChanged: (value) {
-                          context.read<FontSizeBloc>().add(
-                            ChangeFontSize(value),
-                          );
-                        },
+                      SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor: colorScheme.primary,
+                          inactiveTrackColor: colorScheme.onSurface.withValues(
+                            alpha: 0.25,
+                          ),
+                          thumbColor: colorScheme.primary,
+                          overlayColor: colorScheme.primary.withValues(
+                            alpha: 0.15,
+                          ),
+                          trackHeight: 4,
+                        ),
+                        child: Slider(
+                          value: state.scale,
+                          min: 1.0,
+                          max: 1.5,
+                          onChanged: (value) {
+                            context.read<FontSizeBloc>().add(
+                              ChangeFontSize(value),
+                            );
+                          },
+                        ),
                       ),
+
                       SizedBox(height: height * 0.015),
                       Text(
                         "جب زندگی شروع ہوگی",

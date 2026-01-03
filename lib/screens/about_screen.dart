@@ -144,7 +144,7 @@ class AboutScreen extends StatelessWidget {
     return Text(
       text,
       textDirection: TextDirection.rtl,
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.justify,
       style: TextStyle(
         fontFamily: 'Urdu',
         fontSize: fontSize,

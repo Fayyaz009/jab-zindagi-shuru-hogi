@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 part 'change_navigation_event.dart';
 part 'change_navigation_state.dart';
 

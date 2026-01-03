@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_author.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/donate_support.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/screens/settings_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/theme_colors.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/drawer_items.dart';
@@ -111,7 +112,8 @@ class AppDrawer extends StatelessWidget {
                           "📖 جب زندگی شروع ہوگی\n"
                           "✍️ ابو یحییٰ\n\n"
                           "اسلامی، فکری اور روحانی کتاب\n\n"
-                          "Download now from Play Store 👇\n",
+                          "Download now from Play Store 👇\n"
+                          "https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar",
                         );
                       },
                     ),
@@ -135,7 +137,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Version 1.0.0",
+                      "Version 1.0.3",
                       style: TextStyle(
                         fontSize: 11,
                         color: colors.text.withValues(alpha: 0.4),

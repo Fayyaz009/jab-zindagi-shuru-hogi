@@ -47,7 +47,7 @@ class DonateSupportScreen extends StatelessWidget {
               children: [
                 // ================= PURPOSE =================
                 Text(
-                  "منصوبے کے بارے میں",
+                  " ایپ کے مقاصد",
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
                     fontFamily: 'Urdu',
@@ -61,9 +61,9 @@ class DonateSupportScreen extends StatelessWidget {
 
                 Text(
                   """
-یہ ایپ خالصتاً دینی اور فکری مقصد کے تحت بنائی گئی ہے۔
-اگر آپ اس منصوبے کو زندہ رکھنے، مزید بہتری لانے یا دوسرے قارئین تک پہنچانے میں تعاون کرنا چاہتے ہیں تو آپ کی معمولی سی مدد بھی ہمارے لیے قیمتی ہے۔
-اللہ آپ کو جزائے خیر عطا فرمائے۔
+یہ ایپ مکمل طور پر مفت ہے اور بغیر کسی ادائیگی کے استعمال کی جا سکتی ہے۔
+اگر آپ اس منصوبے کو پسند کرتے ہیں اور رضاکارانہ طور پر اس کی سپورٹ کرنا چاہتے ہیں تو آپ کا تعاون ہمارے لیے باعثِ حوصلہ ہوگا۔
+
                   """,
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.justify,
@@ -79,12 +79,25 @@ class DonateSupportScreen extends StatelessWidget {
 
                 // ================= PAYMENT METHODS =================
                 Text(
-                  "مالی تعاون کے ذرائع",
+                  " Disclaimer ",
+                  style: TextStyle(
+                    fontSize: width < 360 ? 18 : 20,
+                    fontWeight: FontWeight.bold,
+                    color: colors.text,
+                  ),
+                ),
+
+                SizedBox(height: sectionSpacing),
+                Text(
+                  """ مالی تعاون مکمل طور پر رضاکارانہ ہے۔
+ایپ کے تمام فیچرز بغیر کسی ادائیگی کے دستیاب ہیں۔
+کسی بھی قسم کی ادائیگی لازمی نہیں اور نہ ہی اس کے بدلے کوئی اضافی سہولت فراہم کی جاتی ہے۔
+ """,
                   textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontFamily: 'Urdu',
                     fontSize: width < 360 ? 18 : 20,
-                    fontWeight: FontWeight.bold,
                     color: colors.text,
                   ),
                 ),
@@ -100,7 +113,7 @@ class DonateSupportScreen extends StatelessWidget {
                 SizedBox(height: height * 0.015),
 
                 _infoTile(
-                  title: "WhatsApp",
+                  title: "WhatsApp Support",
                   value: "0313-7104002",
                   colors: colors,
                 ),
@@ -117,8 +130,8 @@ class DonateSupportScreen extends StatelessWidget {
 
                 // ================= DUA LINE =================
                 Text(
-                  "اگر آپ مالی تعاون نہیں کر سکتے تو\nہماری کامیابی کے لیے دعا ضرور کریں 🤲",
-                  textAlign: TextAlign.center,
+                  " اگر آپ مالی تعاون نہیں کر سکتے تو بھی ایپ استعمال کریں اور اپنی قیمتی رائے ضرور دیں — آپ کی سپورٹ ہمارے لیے قیمتی ہے۔",
+                  textAlign: TextAlign.justify,
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
                     fontFamily: 'Urdu',

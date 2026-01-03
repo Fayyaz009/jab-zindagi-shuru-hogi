@@ -1,4 +1,4 @@
-package com.example.jab_zindagi_shuru_hogi_inzaar
+package com.jabzindagishuruhogi.inzaar
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,5 @@
 part of 'change_navigation_bloc.dart';
 
-@immutable
 sealed class ChangeNavigationState extends Equatable {
   final int index;
 

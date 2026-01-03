@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/change_navigation_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/font_size/bloc/font_size_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/progress_bloc/bloc/progress_bar_bloc.dart';
 
-import 'package:jab_zindagi_shuru_hogi_inzaar/screens/home_screen.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/screens/splash_screen.dart';
 
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_event.dart';
@@ -13,6 +12,7 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart'
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                       );
                     },
 
-                    home: const HomeScreen(),
+                    home: const SplashScreen(),
                   );
                 },
               );
