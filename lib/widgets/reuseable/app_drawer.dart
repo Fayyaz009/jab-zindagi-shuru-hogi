@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_author.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/about_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/donate_support.dart';
-import 'package:jab_zindagi_shuru_hogi_inzaar/screens/settings_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/theme_colors.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/drawer_items.dart';
