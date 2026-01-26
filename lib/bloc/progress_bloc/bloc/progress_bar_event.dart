@@ -13,11 +13,13 @@ class SaveProgress extends ProgressEvent {
   final double offset;
   final double progress;
   final int chapterID;
+  final int percentage;
 
   const SaveProgress({
     required this.offset,
     required this.progress,
     required this.chapterID,
+    required this.percentage,
   });
 }
 
