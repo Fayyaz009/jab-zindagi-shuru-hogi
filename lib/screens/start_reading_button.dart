@@ -4,11 +4,19 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/progress_bloc/bloc/progress_b
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/chapter_data.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/reading_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/services/ad_service.dart';
 
-class StartReadingButton extends StatelessWidget {
+class StartReadingButton extends StatefulWidget {
   final AppThemeType themeType;
 
   const StartReadingButton({super.key, required this.themeType});
+
+  @override
+  State<StartReadingButton> createState() => _StartReadingButtonState();
+}
+
+class _StartReadingButtonState extends State<StartReadingButton> {
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,50 +31,35 @@ class StartReadingButton extends StatelessWidget {
           final validChapters = state.chapterProgress
               .where((m) => m.lastReadAt != null)
               .toList();
-
           if (validChapters.isNotEmpty) {
             buttonText = "Continue Reading";
-
             final latestModel = validChapters.reduce(
               (a, b) => a.lastReadAt!.isAfter(b.lastReadAt!) ? a : b,
             );
-
-            try {
-              targetChapter = chapterItems.firstWhere(
-                (c) => c['chapterID'] == latestModel.chapterID,
-              );
-            } catch (_) {
-              targetChapter = chapterItems.firstWhere(
-                (c) => c['chapterID'] == 1,
-              );
-            }
+            targetChapter = chapterItems.firstWhere(
+              (c) => c['chapterID'] == latestModel.chapterID,
+              orElse: () => chapterItems.first,
+            );
           }
         }
 
-        // ================= THEME-BASED BUTTON COLORS =================
-        final List<Color> gradientColors = themeType == AppThemeType.dark
-            ? const [
-                Color(0xFFC9A24D), // muted gold
-                Color(0xFF8B6B4F), // brown-gold
-              ]
-            : themeType == AppThemeType.sepia
-            ? const [
-                Color(0xFFD6B56E), // soft gold
-                Color(0xFFC9A24D), // muted gold
-              ]
-            : const [
-                Color(0xFFFFD54F), // light gold
-                Color(0xFFFFECB3), // very soft end
-              ];
+        // ================= IMPROVED THEME PALETTE =================
+        final List<Color> gradientColors = widget.themeType == AppThemeType.dark
+            ? const [Color(0xFFD4AF37), Color(0xFF996515)] // Metallic Gold
+            : widget.themeType == AppThemeType.sepia
+            ? const [Color(0xFFE5C17B), Color(0xFFB0893F)] // Warm Bronze
+            : const [Color(0xFFFFD54F), Color(0xFFFBC02D)]; // Vibrant Amber
 
-        final Color textColor = themeType == AppThemeType.dark
-            ? const Color(0xFF2A1B0F)
-            : themeType == AppThemeType.sepia
-            ? const Color(0xFF3E2C1C)
+        final Color textColor = widget.themeType == AppThemeType.dark
+            ? const Color(0xFF1A1108)
             : const Color(0xFF3E2723);
 
         return GestureDetector(
-          onTap: () {
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) => setState(() => _isPressed = false),
+          onTapCancel: () => setState(() => _isPressed = false),
+          onTap: () async {
+            await AdService().showInterstitialAd();
             if (!context.mounted) return;
 
             Navigator.push(
@@ -80,37 +73,69 @@ class StartReadingButton extends StatelessWidget {
               ),
             );
           },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeOut,
-            width: buttonText == "Continue Reading" ? 280 : 260,
-            height: 52, // ⬅️ slightly slimmer (premium look)
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: gradientColors,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: themeType == AppThemeType.dark
-                      ? Colors.black45
-                      : Colors.brown.withValues(alpha: 0.25),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
+          child: AnimatedScale(
+            scale: _isPressed ? 0.96 : 1.0,
+            duration: const Duration(milliseconds: 100),
+            child: Container(
+              width: buttonText == "Continue Reading" ? 280 : 240,
+              height: 56,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: gradientColors,
                 ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 18, // ⬅️ thora refined
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Urdu',
-                  letterSpacing: 0.3,
+                boxShadow: [
+                  BoxShadow(
+                    color: gradientColors.first.withValues(alpha: 0.35),
+                    blurRadius: 15,
+                    spreadRadius: -2,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: Stack(
+                  children: [
+                    // 1. Subtle Glass Shimmer (Light Source)
+                    Positioned(
+                      top: -10,
+                      left: -10,
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white.withValues(alpha: 0.2),
+                      ),
+                    ),
+
+                    // 2. Button Content
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            buttonText == "Continue Reading"
+                                ? Icons.menu_book_rounded
+                                : Icons.play_arrow_rounded,
+                            color: textColor,
+                            size: 22,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            buttonText,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Urdu',
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -40,5 +40,13 @@ class ThemeColors {
           : themeType == AppThemeType.sepia
           // Brown-gold (matches paper theme)
           ? const Color(0xFF8B6B4F)
-          : const Color(0xFF444444);
+          : const Color(0xFF444444),
+
+      card = themeType == AppThemeType.dark
+          ? const Color(0xFF1A1F3C)
+          : themeType == AppThemeType.sepia
+          ? const Color(0xFFEAD7B7)
+          : const Color(0xFFFFFFFF);
+
+  final Color card;
 }

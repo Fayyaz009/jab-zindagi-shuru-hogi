@@ -7,6 +7,11 @@
         android:label="JZSH"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1803767801854733~5574613429"/>
 
         <activity
             android:name=".MainActivity"

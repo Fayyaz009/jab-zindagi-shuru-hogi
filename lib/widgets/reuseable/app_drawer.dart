@@ -6,6 +6,7 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart'
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/theme_colors.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/drawer_items.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppDrawer extends StatelessWidget {
   final AppThemeType themeType;
@@ -100,6 +101,22 @@ class AppDrawer extends StatelessWidget {
                     ),
 
                     DrawerItem(
+                      icon: Icons.star_rate_rounded,
+                      title: "Rate Us",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        final Uri url = Uri.parse(
+                          "https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar",
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                    ),
+
+                    DrawerItem(
                       icon: Icons.share_outlined,
                       title: "Share App",
                       iconColor: colors.icon,
@@ -116,33 +133,34 @@ class AppDrawer extends StatelessWidget {
                         );
                       },
                     ),
+
+                    DrawerItem(
+                      icon: Icons.chat_bubble_outline_rounded,
+                      title: "Contact Us (WhatsApp)",
+                      iconColor: colors.icon,
+                      textColor: colors.text,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        final Uri url = Uri.parse("https://wa.me/923008187411");
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
 
-              /// 🔹 FOOTER
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Column(
-                  children: [
-                    Text(
-                      "جب زندگی شروع ہوگی",
-                      style: TextStyle(
-                        fontFamily: 'Urdu',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: colors.text.withValues(alpha: 0.6),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Version 1.0.3",
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: colors.text.withValues(alpha: 0.4),
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  "جب زندگی شروع ہوگی",
+                  style: TextStyle(
+                    fontFamily: 'Urdu',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: colors.text.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
             ],

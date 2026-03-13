@@ -21,7 +21,7 @@ class AppThemes {
 
     scaffoldBackgroundColor: const Color(0xFF0D102A),
 
-    primaryColor: const Color(0xFFC9A24D), // muted gold
+    primaryColor: const Color(0xFFC5A358), // muted gold
 
     cardColor: const Color(0xFF1A1F3C),
 
@@ -32,28 +32,30 @@ class AppThemes {
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontFamily: 'Urdu',
-        fontSize: 24,
+        fontSize: 28,
         color: Color(0xFFECECEC),
+        fontWeight: FontWeight.bold,
       ),
       bodyLarge: TextStyle(
-        fontSize: 18,
+        fontSize: 20,
         color: Color(0xFFE0E0E0),
         fontFamily: 'Urdu',
+        height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         color: Color(0xFFB0B3C7),
         fontFamily: 'Urdu',
       ),
     ),
 
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Color(0xFFC9A24D),
+      color: Color(0xFFC5A358),
       linearTrackColor: Color(0xFF2A2F55),
     ),
 
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFC9A24D),
+      primary: Color(0xFFC5A358),
       secondary: Color(0xFF5C6BC0),
       tertiary: Color(0xFF1A1F3C),
       surface: Color(0xFF0D102A),
@@ -62,9 +64,9 @@ class AppThemes {
     ),
 
     textSelectionTheme: const TextSelectionThemeData(
-      selectionColor: Color(0x33C9A24D),
-      cursorColor: Color(0xFFC9A24D),
-      selectionHandleColor: Color(0xFFC9A24D),
+      selectionColor: Color(0x33C5A358),
+      cursorColor: Color(0xFFC5A358),
+      selectionHandleColor: Color(0xFFC5A358),
     ),
   );
 
@@ -87,16 +89,18 @@ class AppThemes {
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontFamily: 'Urdu',
-        fontSize: 24,
+        fontSize: 28,
         color: Color(0xFF222222),
+        fontWeight: FontWeight.bold,
       ),
       bodyLarge: TextStyle(
-        fontSize: 18,
+        fontSize: 20,
         color: Color(0xFF333333),
         fontFamily: 'Urdu',
+        height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         color: Color(0xFF616161),
         fontFamily: 'Urdu',
       ),
@@ -140,22 +144,24 @@ class AppThemes {
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontFamily: 'Urdu',
-        fontSize: 24,
+        fontSize: 28,
         color: Color(0xFF4E342E),
+        fontWeight: FontWeight.bold,
       ),
       titleMedium: TextStyle(
-        fontSize: 18,
+        fontSize: 22,
         color: Color(0xFF4E342E),
         fontFamily: 'Urdu',
+        fontWeight: FontWeight.bold,
       ),
       bodyLarge: TextStyle(
-        fontSize: 18,
+        fontSize: 20,
         color: Color(0xFF5D4037),
         fontFamily: 'Urdu',
-        height: 1.7,
+        height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         color: Color(0xFF6D4C41),
         fontFamily: 'Urdu',
       ),

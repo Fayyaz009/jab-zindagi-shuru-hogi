@@ -9,7 +9,7 @@ part 'font_size_state.dart';
 
 class FontSizeBloc extends Bloc<FontSizeEvent, FontSizeState> {
   FontDB db = FontDB.instance;
-  FontSizeBloc() : super(const FontSizeInitial(0.8)) {
+  FontSizeBloc() : super(const FontSizeInitial(1.0)) {
     on<ChangeFontSize>((event, emit) async {
       await db.saveFonts(event.scale);
       emit(FontSizeInitial(event.scale));
@@ -27,7 +27,7 @@ class FontSizeBloc extends Bloc<FontSizeEvent, FontSizeState> {
       final scaleValue = await db.loadFonts();
       emit(FontSizeInitial(scaleValue));
     } catch (e) {
-      emit(FontSizeInitial(0.8));
+      emit(FontSizeInitial(1.0));
     }
   }
 }

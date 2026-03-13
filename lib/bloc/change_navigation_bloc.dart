@@ -7,7 +7,7 @@ class ChangeNavigationBloc
     extends Bloc<ChangeNavigationEvent, ChangeNavigationState> {
   ChangeNavigationBloc() : super(ChangeNavigationInitial(index: 0)) {
     on<ChangeNavigation>((event, emit) {
-      emit(NavigationState(event.selectedIndex));
+      emit(NavigationState(index: event.selectedIndex));
     });
   }
 }

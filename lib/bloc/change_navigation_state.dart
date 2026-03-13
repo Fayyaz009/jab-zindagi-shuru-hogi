@@ -13,8 +13,7 @@ final class ChangeNavigationInitial extends ChangeNavigationState {
 }
 
 class NavigationState extends ChangeNavigationState {
-  final int index;
-  const NavigationState(this.index) : super(index: 0);
+  const NavigationState({required super.index});
 
   @override
   List<Object> get props => [index];

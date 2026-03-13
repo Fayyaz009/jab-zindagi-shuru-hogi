@@ -8,3 +8,10 @@ class ChangeTheme extends ThemeEvent {
 }
 
 class LoadTheme extends ThemeEvent {}
+
+class UnlockSepia extends ThemeEvent {}
+
+class SyncPremiumStatus extends ThemeEvent {
+  final bool isPremium;
+  SyncPremiumStatus(this.isPremium);
+}

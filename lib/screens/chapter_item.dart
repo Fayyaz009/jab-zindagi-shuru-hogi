@@ -30,13 +30,13 @@ class ChapterItem extends StatelessWidget {
     final double iconBoxSize = width < 360
         ? 44
         : width < 600
-        ? 50
-        : 56;
+            ? 50
+            : 56;
     final double titleFontSize = width < 360
         ? 16
         : width < 600
-        ? 18
-        : 20;
+            ? 18
+            : 20;
     final double verticalPadding = width < 360 ? 10 : 12;
 
     final Color surface = theme.cardColor;
@@ -65,19 +65,23 @@ class ChapterItem extends StatelessWidget {
             highlightColor: primary.withValues(alpha: 0.08),
             child: Padding(
               padding: EdgeInsets.all(verticalPadding),
-              child: Row(
+                child: Row(
                 children: [
                   // ================= ICON =================
-                  Container(
-                    width: iconBoxSize,
-                    height: iconBoxSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: primary.withValues(alpha: 0.45),
+                  Hero(
+                    tag: 'chapter_icon_$title',
+                    child: Container(
+                      width: iconBoxSize,
+                      height: iconBoxSize,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: primary.withValues(alpha: 0.45),
+                        ),
                       ),
+                      child:
+                          Icon(icon, color: primary, size: iconBoxSize * 0.55),
                     ),
-                    child: Icon(icon, color: primary, size: iconBoxSize * 0.55),
                   ),
 
                   SizedBox(width: width * 0.04),
@@ -90,6 +94,8 @@ class ChapterItem extends StatelessWidget {
                         Text(
                           title,
                           textDirection: TextDirection.rtl,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: textTheme.bodyLarge?.copyWith(
                             fontFamily: 'Urdu',
                             fontSize: titleFontSize,

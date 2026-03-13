@@ -27,9 +27,15 @@ class HomeHeader extends StatelessWidget {
         ),
 
         // ================= TITLE =================
-        Text(
-          "جب زندگی شروع ہوگی",
-          style: textTheme.titleLarge?.copyWith(fontFamily: 'Urdu'),
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "جب زندگی شروع ہوگی",
+              textAlign: TextAlign.center,
+              style: textTheme.titleLarge?.copyWith(fontFamily: 'Urdu'),
+            ),
+          ),
         ),
 
         // ================= THEME TOGGLE =================
@@ -43,10 +49,12 @@ class HomeHeader extends StatelessWidget {
             color: colorScheme.onSurface,
           ),
           onPressed: () {
+            final isSepiaUnlocked = context.read<ThemeBloc>().isSepiaUnlocked;
+
             final nextTheme = themeType == AppThemeType.dark
                 ? AppThemeType.light
                 : themeType == AppThemeType.light
-                ? AppThemeType.sepia
+                ? (isSepiaUnlocked ? AppThemeType.sepia : AppThemeType.dark)
                 : AppThemeType.dark;
 
             context.read<ThemeBloc>().add(ChangeTheme(nextTheme));

@@ -19,12 +19,38 @@ class ThemeDB {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Updated version for sepia unlock
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE IF NOT EXISTS themeDB (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             themeType TEXT NOT NULL
+          );
+        ''');
+
+        // New table for sepia unlock status
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS sepiaUnlock (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            isUnlocked INTEGER NOT NULL DEFAULT 0
+          );
+        ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS sepiaUnlock (
+              id INTEGER PRIMARY KEY CHECK (id = 1),
+              isUnlocked INTEGER NOT NULL DEFAULT 0
+            );
+          ''');
+        }
+      },
+      onOpen: (db) async {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS sepiaUnlock (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            isUnlocked INTEGER NOT NULL DEFAULT 0
           );
         ''');
       },
@@ -54,5 +80,33 @@ class ThemeDB {
     );
 
     return result.isNotEmpty ? result.first['themeType'] as String : null;
+  }
+
+  /// SAVE sepia unlock status
+  Future<void> saveSepiaUnlock(bool isUnlocked) async {
+    final db = await getDB();
+
+    await db.insert('sepiaUnlock', {
+      'id': 1,
+      'isUnlocked': isUnlocked ? 1 : 0,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /// LOAD sepia unlock status
+  Future<bool> loadSepiaUnlock() async {
+    final db = await getDB();
+
+    final result = await db.query(
+      'sepiaUnlock',
+      columns: ['isUnlocked'],
+      where: 'id = ?',
+      whereArgs: [1],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return result.first['isUnlocked'] == 1;
+    }
+    return false; // Default: sepia is locked
   }
 }
