@@ -11,6 +11,8 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_event.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
 
+import 'package:jab_zindagi_shuru_hogi_inzaar/services/ad_service.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/banner_ad_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ReadingScreen extends StatefulWidget {
@@ -167,7 +169,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
             iconTheme: IconThemeData(color: colorScheme.onSurface),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () async {
+                await AdService().showInterstitialAd();
+                if (context.mounted) Navigator.pop(context);
+              },
             ),
             actions: [
               IconButton(
@@ -175,47 +180,51 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   themeType == AppThemeType.dark
                       ? Icons.dark_mode
                       : themeType == AppThemeType.light
-                          ? Icons.light_mode
-                          : Icons.auto_stories,
+                      ? Icons.light_mode
+                      : Icons.auto_stories,
                   color: colorScheme.onSurface,
                 ),
                 onPressed: () {
-                  final isSepiaUnlocked =
-                      context.read<ThemeBloc>().isSepiaUnlocked;
+                  final isSepiaUnlocked = context
+                      .read<ThemeBloc>()
+                      .isSepiaUnlocked;
 
                   final nextTheme = themeType == AppThemeType.dark
                       ? AppThemeType.light
                       : themeType == AppThemeType.light
-                          ? (isSepiaUnlocked
-                              ? AppThemeType.sepia
-                              : AppThemeType.dark)
-                          : AppThemeType.dark;
+                      ? (isSepiaUnlocked
+                            ? AppThemeType.sepia
+                            : AppThemeType.dark)
+                      : AppThemeType.dark;
 
                   context.read<ThemeBloc>().add(ChangeTheme(nextTheme));
                 },
               ),
             ],
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Hero(
-                  tag: 'chapter_icon_${widget.chapterTitle}',
-                  child: Icon(
-                    Icons.menu_book_rounded,
-                    size: 20,
-                    color: colorScheme.primary,
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Hero(
+                    tag: 'chapter_icon_${widget.chapterTitle}',
+                    child: Icon(
+                      Icons.menu_book_rounded,
+                      size: 20,
+                      color: colorScheme.primary,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  widget.chapterTitle,
-                  style: textTheme.titleLarge?.copyWith(
-                    fontFamily: 'Urdu',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.chapterTitle,
+                    style: textTheme.titleLarge?.copyWith(
+                      fontFamily: 'Urdu',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(4),
@@ -233,187 +242,226 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   return LinearProgressIndicator(
                     value: progress,
                     backgroundColor: colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      colorScheme.primary,
+                    ),
                     minHeight: 3,
                   );
                 },
               ),
             ),
           ),
-          body: NotificationListener<ScrollNotification>(
-            onNotification: (scrollNotification) {
-              // Only save after restore OR when user scrolls
-              if (_hasScrolledToSavedPosition ||
-                  scrollNotification is UserScrollNotification) {
-                _scheduleSaveProgress();
-              }
-              return false;
+          body: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
+              await AdService().showInterstitialAd();
+              if (context.mounted) Navigator.pop(context);
             },
-            child: SingleChildScrollView(
-              controller: _controller,
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.06,
-                vertical: height * 0.03,
-              ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: maxReadingWidth),
-                  child: BlocBuilder<NotesBloc, NotesState>(
-                    builder: (context, notesState) {
-                      // Normalize text to avoid index mismatch (convert \r\n to \n)
-                      final rawText = widget.readingText ?? '';
-                      final text = rawText.replaceAll('\r', '');
+            child: Column(
+              children: [
+                Expanded(
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (scrollNotification) {
+                      // Only save after restore OR when user scrolls
+                      if (_hasScrolledToSavedPosition ||
+                          scrollNotification is UserScrollNotification) {
+                        _scheduleSaveProgress();
+                      }
+                      return false;
+                    },
+                    child: SingleChildScrollView(
+                      controller: _controller,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.06,
+                        vertical: height * 0.03,
+                      ),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: maxReadingWidth,
+                          ),
+                          child: BlocBuilder<NotesBloc, NotesState>(
+                            builder: (context, notesState) {
+                              // Normalize text to avoid index mismatch (convert \r\n to \n)
+                              final rawText = widget.readingText ?? '';
+                              final text = rawText.replaceAll('\r', '');
 
-                      List<TextSpan> spans = [];
-                      if (notesState is NotesLoaded) {
-                        final chapterNotes = notesState.notes
-                            .where((n) => n.chapterID == widget.chapterID)
-                            .toList();
+                              List<TextSpan> spans = [];
+                              if (notesState is NotesLoaded) {
+                                final chapterNotes = notesState.notes
+                                    .where(
+                                      (n) => n.chapterID == widget.chapterID,
+                                    )
+                                    .toList();
 
-                        if (chapterNotes.isNotEmpty) {
-                          int lastIndex = 0;
-                          chapterNotes.sort(
-                            (a, b) => a.startIndex.compareTo(b.startIndex),
-                          );
+                                if (chapterNotes.isNotEmpty) {
+                                  int lastIndex = 0;
+                                  chapterNotes.sort(
+                                    (a, b) =>
+                                        a.startIndex.compareTo(b.startIndex),
+                                  );
 
-                          for (var note in chapterNotes) {
-                            if (note.startIndex >= lastIndex &&
-                                note.startIndex < text.length) {
-                              if (note.startIndex > lastIndex) {
-                                spans.add(
-                                  TextSpan(
-                                    text: text.substring(
-                                      lastIndex,
-                                      note.startIndex,
-                                    ),
-                                  ),
-                                );
+                                  for (var note in chapterNotes) {
+                                    if (note.startIndex >= lastIndex &&
+                                        note.startIndex < text.length) {
+                                      if (note.startIndex > lastIndex) {
+                                        spans.add(
+                                          TextSpan(
+                                            text: text.substring(
+                                              lastIndex,
+                                              note.startIndex,
+                                            ),
+                                          ),
+                                        );
+                                      }
+
+                                      final int end = note.endIndex.clamp(
+                                        0,
+                                        text.length,
+                                      );
+                                      spans.add(
+                                        TextSpan(
+                                          text: text.substring(
+                                            note.startIndex,
+                                            end,
+                                          ),
+                                          style: TextStyle(
+                                            backgroundColor: Color(
+                                              note.colorValue,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                      lastIndex = end;
+                                    }
+                                  }
+
+                                  if (lastIndex < text.length) {
+                                    spans.add(
+                                      TextSpan(text: text.substring(lastIndex)),
+                                    );
+                                  }
+                                } else {
+                                  spans.add(TextSpan(text: text));
+                                }
+                              } else {
+                                spans.add(TextSpan(text: text));
                               }
 
-                              final int end = note.endIndex.clamp(
-                                0,
-                                text.length,
-                              );
-                              spans.add(
-                                TextSpan(
-                                  text: text.substring(note.startIndex, end),
-                                  style: TextStyle(
-                                    backgroundColor: Color(note.colorValue),
-                                  ),
+                              return SelectableText.rich(
+                                TextSpan(children: spans),
+                                textAlign: TextAlign.justify,
+                                textDirection: TextDirection.rtl,
+                                style: textTheme.bodyLarge?.copyWith(
+                                  fontFamily: 'Urdu',
+                                  fontSize: fontSize,
+                                  height: 1.9,
+                                  wordSpacing: 1.2,
+                                  color: colorScheme.onSurface,
                                 ),
-                              );
-                              lastIndex = end;
-                            }
-                          }
-
-                          if (lastIndex < text.length) {
-                            spans.add(
-                              TextSpan(text: text.substring(lastIndex)),
-                            );
-                          }
-                        } else {
-                          spans.add(TextSpan(text: text));
-                        }
-                      } else {
-                        spans.add(TextSpan(text: text));
-                      }
-
-                      return SelectableText.rich(
-                        TextSpan(children: spans),
-                        textAlign: TextAlign.justify,
-                        textDirection: TextDirection.rtl,
-                        style: textTheme.bodyLarge?.copyWith(
-                          fontFamily: 'Urdu',
-                          fontSize: fontSize,
-                          height: 1.9,
-                          wordSpacing: 1.2,
-                          color: colorScheme.onSurface,
-                        ),
-                        selectionHeightStyle: ui.BoxHeightStyle.tight,
-                        selectionWidthStyle: ui.BoxWidthStyle.tight,
-                        contextMenuBuilder: (context, editableTextState) {
-                          return AdaptiveTextSelectionToolbar(
-                            anchors: editableTextState.contextMenuAnchors,
-                            children: [
-                              Container(
-                                height: 48,
-                                margin: const EdgeInsets.only(bottom: 8),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: theme.cardColor,
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.2),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: highlightColors.map((color) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        final selection = editableTextState
-                                            .textEditingValue
-                                            .selection;
-                                        if (!selection.isCollapsed) {
-                                          // Use normalized text for background text extraction
-                                          final content = editableTextState
-                                              .textEditingValue
-                                              .text;
-                                          final selectedText = content
-                                              .substring(
-                                                selection.start,
-                                                selection.end,
-                                              );
-
-                                          _onHighlightSelected(
-                                            selectedText,
-                                            color,
-                                            SelectedContentRange(
-                                              startOffset: selection.start,
-                                              endOffset: selection.end,
-                                            ),
-                                          );
-                                        }
-                                        editableTextState.hideToolbar();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
+                                selectionHeightStyle: ui.BoxHeightStyle.tight,
+                                selectionWidthStyle: ui.BoxWidthStyle.tight,
+                                contextMenuBuilder: (context, editableTextState) {
+                                  return AdaptiveTextSelectionToolbar(
+                                    anchors:
+                                        editableTextState.contextMenuAnchors,
+                                    children: [
+                                      Container(
+                                        height: 48,
+                                        margin: const EdgeInsets.only(
+                                          bottom: 8,
                                         ),
-                                        child: CircleAvatar(
-                                          radius: 14,
-                                          backgroundColor: color.withValues(
-                                            alpha: 1.0,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: theme.cardColor,
+                                          borderRadius: BorderRadius.circular(
+                                            24,
                                           ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: Colors.white,
-                                                width: 1,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.2,
                                               ),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 4),
                                             ),
-                                          ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: highlightColors.map((
+                                            color,
+                                          ) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                final selection =
+                                                    editableTextState
+                                                        .textEditingValue
+                                                        .selection;
+                                                if (!selection.isCollapsed) {
+                                                  // Use normalized text for background text extraction
+                                                  final content =
+                                                      editableTextState
+                                                          .textEditingValue
+                                                          .text;
+                                                  final selectedText = content
+                                                      .substring(
+                                                        selection.start,
+                                                        selection.end,
+                                                      );
+
+                                                  _onHighlightSelected(
+                                                    selectedText,
+                                                    color,
+                                                    SelectedContentRange(
+                                                      startOffset:
+                                                          selection.start,
+                                                      endOffset: selection.end,
+                                                    ),
+                                                  );
+                                                }
+                                                editableTextState.hideToolbar();
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                    ),
+                                                child: CircleAvatar(
+                                                  radius: 14,
+                                                  backgroundColor: color
+                                                      .withValues(alpha: 1.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
                                         ),
                                       ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const BannerAdWidget(),
+              ],
             ),
           ),
         );

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/services/image_share_service.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/app_drawer.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/share_quote_widget.dart';
 
 class Library extends StatelessWidget {
   final String title;
@@ -132,10 +134,37 @@ class GlassQuoteCard extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Icon(
-                    Icons.format_quote_rounded,
-                    color: colorScheme.onSurface.withValues(alpha: 0.3),
-                    size: width * 0.07,
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.format_quote_rounded,
+                        color: colorScheme.onSurface.withValues(alpha: 0.3),
+                        size: width * 0.07,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.image_outlined,
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
+                          size: width * 0.05,
+                        ),
+                        tooltip: "Share as Image",
+                        onPressed: () async {
+                          // Show loading
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Preparing Image...")),
+                          );
+
+                          final bytes = await ImageShareService.screenshotController
+                              .captureFromWidget(
+                            ShareQuoteWidget(quote: title, author: author),
+                            delay: const Duration(milliseconds: 10),
+                          );
+
+                          await ImageShareService.shareImage(bytes, title);
+                        },
+                      ),
+                    ],
                   ),
                   SizedBox(height: width * 0.025),
                   Text(
@@ -149,14 +178,19 @@ class GlassQuoteCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: width * 0.04),
-                  Text(
-                    "- $author",
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontSize: width * 0.032,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                      color: colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "- $author",
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontSize: width * 0.032,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.1,
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

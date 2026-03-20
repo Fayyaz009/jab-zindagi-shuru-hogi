@@ -6,6 +6,7 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/screens/library.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/notes_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/settings_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_bloc.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/banner_ad_widget.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/app_drawer.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/navigation_items.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/progress_bloc/bloc/progress_bar_bloc.dart';
@@ -53,13 +54,20 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: theme.scaffoldBackgroundColor,
 
           // ================= BODY =================
-          body: IndexedStack(
-            index: state.index,
-            children: const [
-              _HomeTab(),
-              Library(title: 'Library'),
-              NotesScreen(),
-              SettingsScreen(),
+          body: Column(
+            children: [
+              Expanded(
+                child: IndexedStack(
+                  index: state.index,
+                  children: const [
+                    _HomeTab(),
+                    Library(title: 'Library'),
+                    NotesScreen(),
+                    SettingsScreen(),
+                  ],
+                ),
+              ),
+              const BannerAdWidget(),
             ],
           ),
 
@@ -422,6 +430,7 @@ class _HomeTab extends StatelessWidget {
                   },
                 ),
 
+                SizedBox(height: size.height * 0.05),
                 SizedBox(height: size.height * 0.12),
               ],
             ),

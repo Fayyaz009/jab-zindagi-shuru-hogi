@@ -18,12 +18,14 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_state.dart'
 import 'package:jab_zindagi_shuru_hogi_inzaar/services/ad_service.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/services/iap_service.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/services/connectivity_service.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/services/notification_service.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/themes.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   AdService().preloadAd();
+  await NotificationService().init();
   runApp(const MyApp());
 }
 
@@ -58,8 +60,32 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AppView extends StatelessWidget {
+class AppView extends StatefulWidget {
   const AppView({super.key});
+
+  @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      AdService().showAppOpenAd();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
