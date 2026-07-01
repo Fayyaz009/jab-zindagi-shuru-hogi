@@ -11,20 +11,69 @@ class AdService {
   
   Completer<void>? _initCompleter;
 
-  /// Initialize the Google Mobile Ads SDK.
+  /// Initialize the Google Mobile Ads SDK with UMP GDPR Consent flow.
   Future<void> init() async {
     if (_initCompleter != null) return _initCompleter!.future;
     
     _initCompleter = Completer<void>();
-    debugPrint('AdService: Initializing MobileAds SDK...');
+    debugPrint('AdService: Starting UMP Consent check...');
+
+    final params = ConsentRequestParameters();
+    
+    try {
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        params,
+        () async {
+          try {
+            ConsentForm.loadAndShowConsentFormIfRequired((FormError? error) async {
+              if (error != null) {
+                debugPrint('AdService: UMP Form load/show error: ${error.message}');
+              }
+              
+              // Proceed to check if ads can be requested
+              final canShow = await ConsentInformation.instance.canRequestAds();
+              debugPrint('AdService: Can request ads: $canShow');
+              
+              if (canShow) {
+                await _initializeSDK();
+              } else {
+                debugPrint('AdService: Ads consent not granted/possible.');
+                if (!_initCompleter!.isCompleted) {
+                  _initCompleter!.complete();
+                }
+              }
+            });
+          } catch (e) {
+            debugPrint('AdService: Error during UMP flow execution: $e');
+            await _initializeSDK();
+          }
+        },
+        (FormError error) async {
+          debugPrint('AdService: UMP Request error: ${error.message}');
+          await _initializeSDK();
+        },
+      );
+    } catch (e) {
+      debugPrint('AdService: Consent request update exception: $e');
+      await _initializeSDK();
+    }
+
+    return _initCompleter!.future;
+  }
+
+  Future<void> _initializeSDK() async {
     try {
       await MobileAds.instance.initialize();
-      debugPrint('AdService: MobileAds SDK Initialized');
-      _initCompleter!.complete();
+      debugPrint('AdService: MobileAds SDK Initialized successfully.');
+      if (!_initCompleter!.isCompleted) {
+        _initCompleter!.complete();
+      }
     } catch (e) {
-      debugPrint('AdService: Initialization error: $e');
-      _initCompleter!.completeError(e);
-      _initCompleter = null; // Allow retry if failed
+      debugPrint('AdService: MobileAds SDK Initialization error: $e');
+      if (!_initCompleter!.isCompleted) {
+        _initCompleter!.completeError(e);
+      }
+      _initCompleter = null;
     }
   }
 

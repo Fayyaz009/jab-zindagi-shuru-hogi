@@ -19,10 +19,16 @@ class UpdateConfig {
   /// Standard platforms: 'android' or 'ios'.
   factory UpdateConfig.fromJson(Map<String, dynamic> json, String platform) {
     final platformJson = json[platform] as Map<String, dynamic>? ?? {};
+    final defaultUrl = platform == 'android'
+        ? 'https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar'
+        : 'https://apps.apple.com/app/id6475653457'; // Replace with iOS App Store link if needed
+    
     return UpdateConfig(
       minRequiredVersion: platformJson['min_required_version'] as String? ?? '1.0.0',
       latestVersion: platformJson['latest_version'] as String? ?? '1.0.0',
-      updateUrl: platformJson['update_url'] as String? ?? '',
+      updateUrl: (platformJson['update_url'] as String?)?.isNotEmpty == true
+          ? platformJson['update_url'] as String
+          : defaultUrl,
       forceUpdateOverride: platformJson['force_update'] as bool? ?? false,
       title: platformJson['title'] as String? ?? 'Update Available',
       updateMessage: platformJson['update_message'] as String? ?? 'Please update to the latest version for the best experience.',

@@ -27,12 +27,6 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/themes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final adService = AdService();
-  await adService.init();
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    adService.preloadAd();
-  });
   await NotificationService().init();
 
   SystemChrome.setSystemUIOverlayStyle(

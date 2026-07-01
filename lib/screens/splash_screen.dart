@@ -6,6 +6,7 @@ import '../features/update/data/update_repository.dart';
 import '../features/update/domain/update_config.dart';
 import '../features/update/utils/version_helper.dart';
 import '../features/update/presentation/force_update_screen.dart';
+import '../services/ad_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -31,7 +32,15 @@ class _SplashScreenState extends State<SplashScreen> {
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
-      // 2. Fetch remote update configurations
+      // 2. Initialize UMP Consent & Mobile Ads
+      try {
+        await AdService().init();
+        AdService().preloadAd();
+      } catch (e) {
+        debugPrint('SplashScreen: AdService initialization error: $e');
+      }
+
+      // 3. Fetch remote update configurations
       final repo = UpdateRepository();
       final config = await repo.fetchUpdateConfig();
 
