@@ -58,8 +58,7 @@ class _StartReadingButtonState extends State<StartReadingButton> {
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) => setState(() => _isPressed = false),
           onTapCancel: () => setState(() => _isPressed = false),
-          onTap: () async {
-            await AdService().showInterstitialAd();
+          onTap: () {
             if (!context.mounted) return;
 
             Navigator.push(
@@ -72,6 +71,11 @@ class _StartReadingButtonState extends State<StartReadingButton> {
                 ),
               ),
             );
+
+            // Show ad AFTER navigation has arrived (longer delay for better experience)
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              AdService().showInterstitialAd();
+            });
           },
           child: AnimatedScale(
             scale: _isPressed ? 0.96 : 1.0,

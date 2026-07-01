@@ -20,9 +20,12 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/screens/home_header.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/reading_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/start_reading_button.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/services/ad_service.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/features/update/domain/update_config.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/features/update/presentation/soft_update_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final UpdateConfig? softUpdateConfig;
+  const HomeScreen({super.key, this.softUpdateConfig});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,6 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.softUpdateConfig != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkAndShowSoftUpdate();
+      });
+    }
+  }
+
+  Future<void> _checkAndShowSoftUpdate() async {
+    final show = await SoftUpdateDialog.shouldShowPrompt();
+    if (show && mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => SoftUpdateDialog(config: widget.softUpdateConfig!),
+      );
+    }
   }
 
   @override
@@ -67,48 +86,54 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const BannerAdWidget(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const BannerAdWidget(),
+              ),
             ],
           ),
 
           // ================= BOTTOM NAV =================
-          bottomNavigationBar: CurvedNavigationBar(
-            index: state.index,
-            height: height * 0.075,
-            backgroundColor: Colors.transparent,
-            buttonBackgroundColor: Colors.transparent,
-            color: theme.cardColor,
-            items: [
-              NavigationItems(
-                label: 'Home',
-                icon: Icons.home,
-                index: 0,
-                selectedIndex: state.index,
-              ),
-              NavigationItems(
-                label: 'Library',
-                icon: Icons.library_books,
-                index: 1,
-                selectedIndex: state.index,
-              ),
-              NavigationItems(
-                label: 'My Notes',
-                icon: Icons.note_alt_outlined,
-                index: 2,
-                selectedIndex: state.index,
-              ),
-              NavigationItems(
-                label: 'Settings',
-                icon: Icons.settings,
-                index: 3,
-                selectedIndex: state.index,
-              ),
-            ],
-            onTap: (index) {
-              context.read<ChangeNavigationBloc>().add(
-                ChangeNavigation(selectedIndex: index),
-              );
-            },
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: CurvedNavigationBar(
+              index: state.index,
+              height: height * 0.075,
+              backgroundColor: Colors.transparent,
+              buttonBackgroundColor: Colors.transparent,
+              color: theme.cardColor,
+              items: [
+                NavigationItems(
+                  label: 'Home',
+                  icon: Icons.home,
+                  index: 0,
+                  selectedIndex: state.index,
+                ),
+                NavigationItems(
+                  label: 'Library',
+                  icon: Icons.library_books,
+                  index: 1,
+                  selectedIndex: state.index,
+                ),
+                NavigationItems(
+                  label: 'My Notes',
+                  icon: Icons.note_alt_outlined,
+                  index: 2,
+                  selectedIndex: state.index,
+                ),
+                NavigationItems(
+                  label: 'Settings',
+                  icon: Icons.settings,
+                  index: 3,
+                  selectedIndex: state.index,
+                ),
+              ],
+              onTap: (index) {
+                context.read<ChangeNavigationBloc>().add(
+                  ChangeNavigation(selectedIndex: index),
+                );
+              },
+            ),
           ),
         );
       },
@@ -407,9 +432,7 @@ class _HomeTab extends StatelessWidget {
                             icon: chapter["icon"],
                             progress: progressMap[chapterId] ?? 0.0,
                             themeType: themeType,
-                            onTap: () async {
-                              // Show interstitial ad before navigating
-                              await AdService().showInterstitialAd();
+                            onTap: () {
                               if (context.mounted) {
                                 Navigator.push(
                                   context,
@@ -420,6 +443,13 @@ class _HomeTab extends StatelessWidget {
                                       chapterID: chapterId,
                                     ),
                                   ),
+                                );
+                                // Show ad AFTER navigation has started
+                                Future.delayed(
+                                  const Duration(milliseconds: 800),
+                                  () {
+                                    AdService().showInterstitialAd();
+                                  },
                                 );
                               }
                             },
@@ -440,5 +470,3 @@ class _HomeTab extends StatelessWidget {
     );
   }
 }
-
-

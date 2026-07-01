@@ -169,10 +169,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
             iconTheme: IconThemeData(color: colorScheme.onSurface),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () async {
-                await AdService().showInterstitialAd();
-                if (context.mounted) Navigator.pop(context);
-              },
+            onPressed: () {
+              Navigator.pop(context);
+              // Show ad AFTER the screen has started popping
+              Future.delayed(const Duration(milliseconds: 300), () {
+                AdService().showInterstitialAd();
+              });
+            },
             ),
             actions: [
               IconButton(
@@ -253,10 +256,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
           ),
           body: PopScope(
             canPop: false,
-            onPopInvokedWithResult: (didPop, result) async {
+            onPopInvokedWithResult: (didPop, result) {
               if (didPop) return;
-              await AdService().showInterstitialAd();
-              if (context.mounted) Navigator.pop(context);
+              Navigator.pop(context);
+              // Show ad AFTER the screen has started popping
+              Future.delayed(const Duration(milliseconds: 300), () {
+                AdService().showInterstitialAd();
+              });
             },
             child: Column(
               children: [
@@ -460,7 +466,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                     ),
                   ),
                 ),
-                const BannerAdWidget(),
+                SafeArea(
+                  top: false,
+                  child: const BannerAdWidget(),
+                ),
               ],
             ),
           ),

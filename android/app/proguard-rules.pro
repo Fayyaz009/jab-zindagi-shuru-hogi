@@ -21,5 +21,8 @@
 -keep class com.google.android.play.core.** { *; }
 -dontwarn com.google.android.play.core.**
 
+# Google Play Billing
+-keep class com.android.vending.billing.** { *; }
+
 # Keep exceptions and line numbers for better crash reports
 -keepattributes Signature,Exceptions,SourceFile,LineNumberTable

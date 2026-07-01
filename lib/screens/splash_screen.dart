@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../main.dart';
+import '../features/update/data/update_repository.dart';
+import '../features/update/domain/update_config.dart';
+import '../features/update/utils/version_helper.dart';
+import '../features/update/presentation/force_update_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,26 +15,67 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Timer? _timer;
-
   @override
   void initState() {
     super.initState();
-
-    _timer = Timer(const Duration(seconds: 2), () {
-      if (!mounted) return; // ✅ VERY IMPORTANT
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AppContent()),
-      );
-    });
+    _checkAppUpdate();
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel(); // ✅ cancel timer
-    super.dispose();
+  Future<void> _checkAppUpdate() async {
+    final startTime = DateTime.now();
+    UpdateConfig? forceUpdateConfig;
+    UpdateConfig? softUpdateConfig;
+
+    try {
+      // 1. Get current installed version info
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+
+      // 2. Fetch remote update configurations
+      final repo = UpdateRepository();
+      final config = await repo.fetchUpdateConfig();
+
+      if (config != null) {
+        final isHardUpdate = VersionHelper.isVersionLower(currentVersion, config.minRequiredVersion) || 
+                             config.forceUpdateOverride;
+        final isSoftUpdate = VersionHelper.isVersionLower(currentVersion, config.latestVersion);
+
+        if (isHardUpdate) {
+          forceUpdateConfig = config;
+        } else if (isSoftUpdate) {
+          softUpdateConfig = config;
+        }
+      }
+    } catch (_) {
+      // Graceful degradation: If network fails or throws an exception, continue to the app normally
+    }
+
+    // Ensure splash screen remains active for at least 1.5 seconds for visual styling and initialization smoothness
+    final elapsedTime = DateTime.now().difference(startTime);
+    final remainingTime = const Duration(milliseconds: 1500) - elapsedTime;
+    if (remainingTime > Duration.zero) {
+      await Future.delayed(remainingTime);
+    }
+
+    if (!mounted) return;
+
+    if (forceUpdateConfig != null) {
+      // User must update (Hard block)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ForceUpdateScreen(config: forceUpdateConfig!),
+        ),
+      );
+    } else {
+      // User can proceed to app. Pass soft update info if any
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AppContent(softUpdateConfig: softUpdateConfig),
+        ),
+      );
+    }
   }
 
   @override

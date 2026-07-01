@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/change_navigation_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/font_size/bloc/font_size_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notes_bloc/notes_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/premium_bloc/premium_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/progress_bloc/bloc/progress_bar_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/connectivity_bloc/connectivity_bloc.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notification_bloc/notification_bloc.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notification_bloc/notification_event.dart';
 
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/home_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/no_internet_screen.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/screens/splash_screen.dart'; // Added this import
+import 'package:jab_zindagi_shuru_hogi_inzaar/features/update/domain/update_config.dart';
 
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_bloc.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/themes/bloc/bloc/theme_event.dart';
@@ -23,9 +26,23 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
-  AdService().preloadAd();
+
+  final adService = AdService();
+  await adService.init();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    adService.preloadAd();
+  });
   await NotificationService().init();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
+
   runApp(const MyApp());
 }
 
@@ -53,6 +70,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (_) => NotesBloc()..add(LoadNotes())),
           BlocProvider(create: (_) => PremiumBloc()),
           BlocProvider(create: (_) => ConnectivityBloc(connectivityService)),
+          BlocProvider(
+            create: (_) => NotificationBloc()..add(LoadNotificationSettings()),
+          ),
         ],
         child: const AppView(),
       ),
@@ -100,7 +120,9 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
                     progressState is ProgressBarLoading) {
                   return const MaterialApp(
                     debugShowCheckedModeBanner: false,
-                    home: Scaffold(body: Center(child: CircularProgressIndicator())),
+                    home: Scaffold(
+                      body: Center(child: CircularProgressIndicator()),
+                    ),
                   );
                 }
 
@@ -108,18 +130,18 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
 
                 return BlocListener<PremiumBloc, PremiumState>(
                   listener: (context, premiumState) {
-                    context
-                        .read<ThemeBloc>()
-                        .add(SyncPremiumStatus(premiumState.isPremium));
+                    context.read<ThemeBloc>().add(
+                      SyncPremiumStatus(premiumState.isPremium),
+                    );
                   },
                   child: MaterialApp(
                     debugShowCheckedModeBanner: false,
                     theme: AppThemes.getTheme(themeState.themeType),
                     builder: (context, child) {
                       return MediaQuery(
-                        data: MediaQuery.of(context).copyWith(
-                          textScaler: TextScaler.linear(textScale),
-                        ),
+                        data: MediaQuery.of(
+                          context,
+                        ).copyWith(textScaler: TextScaler.linear(textScale)),
                         child: child!,
                       );
                     },
@@ -136,7 +158,9 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
 }
 
 class AppContent extends StatelessWidget {
-  const AppContent({super.key});
+  final UpdateConfig? softUpdateConfig;
+
+  const AppContent({super.key, this.softUpdateConfig});
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +173,7 @@ class AppContent extends StatelessWidget {
                 connectivityState.status == ConnectivityStatus.offline) {
               return const NoInternetScreen();
             }
-            return const HomeScreen();
+            return HomeScreen(softUpdateConfig: softUpdateConfig);
           },
         );
       },

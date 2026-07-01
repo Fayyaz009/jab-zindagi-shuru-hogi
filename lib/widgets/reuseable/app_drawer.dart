@@ -7,6 +7,10 @@ import 'package:jab_zindagi_shuru_hogi_inzaar/themes/theme_colors.dart';
 import 'package:jab_zindagi_shuru_hogi_inzaar/widgets/reuseable/drawer_items.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notification_bloc/notification_bloc.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notification_bloc/notification_event.dart';
+import 'package:jab_zindagi_shuru_hogi_inzaar/bloc/notification_bloc/notification_state.dart';
 
 class AppDrawer extends StatelessWidget {
   final AppThemeType themeType;
@@ -111,7 +115,10 @@ class AppDrawer extends StatelessWidget {
                           "https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar",
                         );
                         if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
                         }
                       },
                     ),
@@ -123,13 +130,16 @@ class AppDrawer extends StatelessWidget {
                       textColor: colors.text,
                       onTap: () {
                         Navigator.pop(context);
-                        Share.share(
-                          "میں یہ کتاب پڑھ رہا ہوں:\n\n"
-                          "📖 جب زندگی شروع ہوگی\n"
-                          "✍️ ابو یحییٰ\n\n"
-                          "اسلامی، فکری اور روحانی کتاب\n\n"
-                          "Download now from Play Store 👇\n"
-                          "https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar",
+                        SharePlus.instance.share(
+                          ShareParams(
+                            text:
+                                "میں یہ کتاب پڑھ رہا ہوں:\n\n"
+                                "📖 جب زندگی شروع ہوگی\n"
+                                "✍️ ابو یحییٰ\n\n"
+                                "اسلامی، فکری اور روحانی کتاب\n\n"
+                                "Download now from Play Store 👇\n"
+                                "https://play.google.com/store/apps/details?id=com.jabzindagishuruhogi.inzaar",
+                          ),
                         );
                       },
                     ),
@@ -143,8 +153,52 @@ class AppDrawer extends StatelessWidget {
                         Navigator.pop(context);
                         final Uri url = Uri.parse("https://wa.me/923008187411");
                         if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
                         }
+                      },
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Divider(
+                        color: colors.text.withValues(alpha: 0.15),
+                      ),
+                    ),
+
+                    BlocBuilder<NotificationBloc, NotificationState>(
+                      builder: (context, state) {
+                        return ListTile(
+                          leading: Icon(
+                            state.notificationsEnabled
+                                ? Icons.notifications_active_outlined
+                                : Icons.notifications_off_outlined,
+                            color: colors.icon,
+                          ),
+                          title: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Push Notifications",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colors.text,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          trailing: Switch(
+                            value: state.notificationsEnabled,
+                            activeThumbColor: colors.icon,
+                            onChanged: (value) {
+                              context.read<NotificationBloc>().add(
+                                ToggleNotifications(value),
+                              );
+                            },
+                          ),
+                          dense: true,
+                        );
                       },
                     ),
                   ],

@@ -37,10 +37,13 @@ class NoteSharingService {
       File imageFile = File(imagePath);
       await imageFile.writeAsBytes(buffer);
 
-      await Share.shareXFiles(
-        [XFile(imagePath)],
-        subject: 'Highlight from ${note.chapterTitle}',
-        text: '${note.text}\n\n— from ${note.chapterTitle}\nRead more in Jab Zindagi Shuru Hogi app!',
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(imagePath)],
+          subject: 'Highlight from ${note.chapterTitle}',
+          text:
+              '${note.text}\n\n— from ${note.chapterTitle}\nRead more in Jab Zindagi Shuru Hogi app!',
+        ),
       );
 
       // Clean up after share

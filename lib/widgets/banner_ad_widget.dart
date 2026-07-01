@@ -21,8 +21,15 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     _loadAd();
   }
 
-  void _loadAd() {
+  void _loadAd() async {
+    // Ensure the Ad SDK is initialized before loading any ad
+    await AdService().init();
+    if (!mounted) return;
+
+    final adSize = await AdService().getAdaptiveBannerSize(context);
+
     _bannerAd = AdService().createBannerAd(
+      size: adSize,
       onAdLoaded: (ad) {
         if (mounted) {
           setState(() {
@@ -38,7 +45,8 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
             _isAdLoaded = false;
           });
         }
-        // Retry loading after a delay
+        // Retry loading after a delay (Exponential backoff handled in AdService ideally, 
+        // but for banner we just retry after 30s)
         Future.delayed(const Duration(seconds: 30), () {
           if (mounted) _loadAd();
         });

@@ -87,6 +87,12 @@ class PremiumScreen extends StatelessWidget {
                             color: Color(0xFFD4AF37),
                           ),
                         )
+                      else if (!state.isStoreAvailable)
+                        _buildBillingUnavailableCard(context, state)
+                      else if (!state.isProductFound)
+                        _buildProductNotFoundCard(context)
+                      else if (state.premiumProduct == null)
+                        const SizedBox.shrink()
                       else
                         _buildPurchaseControls(context, state),
 
@@ -279,6 +285,114 @@ class PremiumScreen extends StatelessWidget {
             ),
           )
           .toList(),
+    );
+  }
+
+  Widget _buildBillingUnavailableCard(BuildContext context, PremiumState state) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.redAccent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 40),
+          const SizedBox(height: 12),
+          const Text(
+            'In-App Billing Unavailable',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Google Play Store services are not available on this device. Please check your internet connection or ensure you are signed into a Google account.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          ),
+          if (state.errorMessage != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              'Detail: ${state.errorMessage}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.redAccent.withValues(alpha: 0.8),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () => context.read<PremiumBloc>().add(LoadPremiumStatus()),
+            icon: const Icon(Icons.refresh_rounded, size: 18),
+            label: const Text('Try Again'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent.withValues(alpha: 0.2),
+              foregroundColor: Colors.redAccent,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductNotFoundCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.orangeAccent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.orangeAccent.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.search_off_rounded,
+            color: Colors.orangeAccent,
+            size: 40,
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Premium Plan Not Found',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'The billing service is active, but the product ID ("premium") was not found in the Google Play Store response.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Please verify in Play Console that the Product ID is "premium" and is currently "Active".',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () => context.read<PremiumBloc>().add(LoadPremiumStatus()),
+            icon: const Icon(Icons.refresh_rounded, size: 18),
+            label: const Text('Check Again'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orangeAccent.withValues(alpha: 0.2),
+              foregroundColor: Colors.orangeAccent,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

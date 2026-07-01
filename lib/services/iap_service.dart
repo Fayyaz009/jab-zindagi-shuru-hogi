@@ -18,43 +18,100 @@ class IAPService {
   Stream<PurchaseStatus> get purchaseStream => _purchaseController.stream;
 
   Future<void> initialize() async {
-    final Stream<List<PurchaseDetails>> purchaseUpdated = _iap.purchaseStream;
-    _subscription = purchaseUpdated.listen(
-      (purchaseDetailsList) {
-        _listenToPurchaseUpdated(purchaseDetailsList);
-      },
-      onDone: () {
-        _subscription.cancel();
-      },
-      onError: (error) {
-        debugPrint('IAP Error: $error');
-      },
-    );
+    int retryCount = 0;
+    const int maxRetries = 3;
+    bool available = false;
+
+    while (retryCount < maxRetries && !available) {
+      try {
+        available = await _iap.isAvailable();
+        if (!available) {
+          retryCount++;
+          if (retryCount < maxRetries) {
+            debugPrint('IAP: Billing not available, retrying ($retryCount/$maxRetries)...');
+            await Future.delayed(Duration(seconds: 1 * retryCount));
+          }
+        }
+      } catch (e) {
+        debugPrint('IAP Initialization check error (attempt $retryCount): $e');
+        retryCount++;
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
+
+    if (!available) {
+      debugPrint('IAP Error: Billing context not available after $maxRetries attempts.');
+      // Still set up the listener in case it becomes available later
+    }
+
+    try {
+      final Stream<List<PurchaseDetails>> purchaseUpdated = _iap.purchaseStream;
+      _subscription = purchaseUpdated.listen(
+        (purchaseDetailsList) {
+          _listenToPurchaseUpdated(purchaseDetailsList);
+        },
+        onDone: () {
+          _subscription.cancel();
+        },
+        onError: (error) {
+          debugPrint('IAP Stream Error: $error');
+        },
+      );
+    } catch (e) {
+      debugPrint('IAP Stream Subscription Error: $e');
+    }
   }
 
   void dispose() {
     _subscription.cancel();
   }
 
+  Future<String?> getAvailabilityError() async {
+    try {
+      final bool available = await _iap.isAvailable();
+      if (available) return null;
+      return 'Google Play Store reports billing is not available on this device.';
+    } catch (e) {
+      debugPrint('IAP isAvailable Error: $e');
+      return e.toString();
+    }
+  }
+
   Future<bool> isAvailable() async {
-    return await _iap.isAvailable();
+    return (await getAvailabilityError()) == null;
   }
 
   Future<List<ProductDetails>> getProducts() async {
-    final ProductDetailsResponse response = await _iap.queryProductDetails({
-      productNoAds,
-    });
-    if (response.notFoundIDs.isNotEmpty) {
-      debugPrint('Products not found: ${response.notFoundIDs}');
+    try {
+      if (!await isAvailable()) {
+        debugPrint('IAP: Billing not available, skipping product query.');
+        return [];
+      }
+
+      final ProductDetailsResponse response = await _iap.queryProductDetails({
+        productNoAds,
+      });
+      
+      if (response.notFoundIDs.isNotEmpty) {
+        debugPrint('Products not found: ${response.notFoundIDs}');
+      }
+      return response.productDetails;
+    } catch (e) {
+      debugPrint('IAP getProducts Error: $e');
+      return [];
     }
-    return response.productDetails;
   }
 
   Future<void> buyNonConsumable(ProductDetails productDetails) async {
     final PurchaseParam purchaseParam = PurchaseParam(
       productDetails: productDetails,
     );
-    await _iap.buyNonConsumable(purchaseParam: purchaseParam);
+    try {
+      await _iap.buyNonConsumable(purchaseParam: purchaseParam);
+    } catch (e) {
+      debugPrint('IAP Purchase Error: $e');
+      rethrow;
+    }
   }
 
   Future<void> restorePurchases() async {
